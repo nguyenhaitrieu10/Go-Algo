@@ -50,10 +50,10 @@ func DoLongWorkWithHeartBeat(done <-chan interface{}, pulseInterval time.Duratio
 
 func TestLongWork() {
 	done := make(chan interface{})
-	time.AfterFunc(5*time.Second, func() { defer close(done) })
+	time.AfterFunc(10*time.Second, func() { defer close(done) })
 
-	const timeout = 4 * time.Second
-	heartBeat, result := DoLongWorkWithHeartBeat(done, timeout/4)
+	const timeout = 2 * time.Second
+	heartBeat, result := DoLongWorkWithHeartBeat(done, timeout/2)
 
 	for {
 		select {
