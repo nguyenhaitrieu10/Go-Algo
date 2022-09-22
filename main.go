@@ -1,7 +1,9 @@
 package main
 
-import "go-algo/rate_limit"
+import (
+	"go-algo/concurrency_pattern"
+)
 
 func main() {
-	rate_limit.MainRateLimit()
+	concurrency_pattern.TestDuplication()
 }
