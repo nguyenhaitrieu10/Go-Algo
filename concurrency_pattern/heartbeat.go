@@ -2,6 +2,7 @@ package concurrency_pattern
 
 import (
 	"fmt"
+	"math/rand"
 	"time"
 )
 
@@ -48,7 +49,7 @@ func DoLongWorkWithHeartBeat(done <-chan interface{}, pulseInterval time.Duratio
 	return heartBeat, result
 }
 
-func TestLongWork() {
+func RunExampleLongWork() {
 	done := make(chan interface{})
 	time.AfterFunc(10*time.Second, func() { defer close(done) })
 
@@ -71,4 +72,27 @@ func TestLongWork() {
 			return
 		}
 	}
+}
+
+func HeartBeatTellProgress(done <-chan interface{}, pulseInterval time.Duration) (<-chan interface{}, <-chan int) {
+	heartBeat := make(chan interface{})
+	result := make(chan int)
+	go func() {
+		defer close(heartBeat)
+		defer close(result)
+
+		for i := 0; i < 10; i++ {
+			select {
+			case heartBeat <- struct{}{}:
+			default:
+			}
+
+			select {
+			case <-done:
+				return
+			case result <- rand.Intn(10):
+			}
+		}
+	}()
+	return heartBeat, result
 }
